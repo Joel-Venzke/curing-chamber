@@ -1,6 +1,14 @@
 <html>
 	<body>
-		<h1>Chamber: {{ name }}</h1>
+        {% if name %}
+		<h1>{{ name }}</h1>
+        {% else %}
+        <h1>Unnamed Chamber</h1>
+        {% endif %}
+        {% for prob in probs %}
+        Current temp: {{ prob.temp }}F<br>
+        Current Humidity: {{ prob.humidity }}%<br>
+        {% endfor %}
 		<img src='/plot' alt='my plot'>
 	</body>
 </html>

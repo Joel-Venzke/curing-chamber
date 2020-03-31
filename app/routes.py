@@ -8,9 +8,20 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/chamber/', defaults={'name': None})
 @app.route('/chamber/<name>')
 def chamber(name):
-    return render_template('chamber.html', name=name)
+    probs = [{
+        'temp': 72,
+        "humidity": 68
+    }, {
+        'temp': 55,
+        "humidity": 70
+    }, {
+        'temp': 50,
+        "humidity": 60
+    }]
+    return render_template('chamber.html', name=name, probs=probs)
 
 
 @app.route('/plot')

@@ -42,10 +42,7 @@ def blog():
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     form = LoginForm()
-    print('hit')
-    print(form.validate_on_submit())
     if form.validate_on_submit():
-        print("hit in")
         flash('Login Requested for user {}, remember_me={}'.format(
             form.username.data, form.remember_me.data))
         return redirect('/index')

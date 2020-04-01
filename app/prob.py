@@ -2,6 +2,7 @@ from bokeh.embed import components
 from bokeh.plotting import figure, gridplot
 import numpy as np
 from scipy.ndimage.filters import uniform_filter
+from bokeh.models.annotations import BoxAnnotation
 
 
 def window_stdev(arr, window):
@@ -12,12 +13,12 @@ def window_stdev(arr, window):
 
 def plot_data():
     x = np.arange(0, 10 * np.pi, 0.1)
-    y = np.sin(x) * 5 + (np.random.rand(x.shape[0]) - 0.5) * 2 + 55
+    y = np.sin(x) * 5 + (np.random.rand(x.shape[0]) - 0.5) * 4 + 55
     chamber_temp_plot = make_figure(x,
                                     y,
                                     target_high=60,
                                     target_low=50,
-                                    window_size=30,
+                                    window_size=50,
                                     y_max_lower_bound=70,
                                     y_min_upper_bound=40,
                                     plot_width=500,
@@ -34,7 +35,7 @@ def plot_data():
                                      y,
                                      target_high=80,
                                      target_low=60,
-                                     window_size=30,
+                                     window_size=50,
                                      x_range=chamber_temp_plot.x_range,
                                      y_max_lower_bound=100,
                                      y_min_upper_bound=40,
@@ -50,7 +51,7 @@ def plot_data():
                                     y,
                                     target_high=None,
                                     target_low=None,
-                                    window_size=30,
+                                    window_size=50,
                                     x_range=chamber_temp_plot.x_range,
                                     y_max_lower_bound=80,
                                     y_min_upper_bound=60,
@@ -68,7 +69,7 @@ def plot_data():
                                      y,
                                      target_high=None,
                                      target_low=None,
-                                     window_size=30,
+                                     window_size=50,
                                      x_range=chamber_temp_plot.x_range,
                                      y_max_lower_bound=50,
                                      y_min_upper_bound=0,
@@ -86,20 +87,22 @@ def plot_data():
     return script, div
 
 
-def make_figure(x,
-                y,
-                target_high=60,
-                target_low=50,
-                window_size=30,
-                x_range=None,
-                y_max_lower_bound=70,
-                y_min_upper_bound=70,
-                plot_width=400,
-                plot_height=150,
-                title="Temperature",
-                y_axis_label="Temperature (F)",
-                x_axis_label="Time",
-                measurement_name="Temp."):
+def make_figure(
+    x,
+    y,
+    target_high=60,
+    target_low=50,
+    window_size=50,
+    x_range=None,
+    y_max_lower_bound=70,
+    y_min_upper_bound=70,
+    plot_width=400,
+    plot_height=150,
+    title="Temperature",
+    y_axis_label="Temperature (F)",
+    x_axis_label="Time",
+    measurement_name="Temp.",
+    tools="pan,crosshair,hover,box_select,lasso_select,save,reset,help"):
     window = np.ones(window_size) / float(window_size)
     y_avg = np.convolve(y, window, 'same')
     y_std = window_stdev(y, window_size) / 2
@@ -117,25 +120,20 @@ def make_figure(x,
                   title=title,
                   x_axis_label=x_axis_label,
                   y_axis_label=y_axis_label,
-                  x_axis_type="datetime")
+                  x_axis_type="datetime",
+                  tools=tools)
     if target_high and target_low:
-        plot.varea(x=x,
-                   y1=np.ones(x.shape) * 1e5,
-                   y2=np.ones(x.shape) * target_high,
-                   alpha=0.2,
-                   color='red')
-        plot.varea(x=x,
-                   y1=np.ones(x.shape) * target_low,
-                   y2=-np.ones(x.shape) * 1e5,
-                   alpha=0.2,
-                   color='red')
-        plot.varea(x=x,
-                   y1=np.ones(x.shape) * target_high,
-                   y2=np.ones(x.shape) * target_low,
-                   alpha=0.2,
-                   color='green',
-                   legend_label='Target range')
-    plot.line(x, y, legend_label=measurement_name, color='darkblue')
+        upper = BoxAnnotation(bottom=target_high,
+                              fill_alpha=0.2,
+                              fill_color='red')
+        plot.add_layout(upper)
+        lower = BoxAnnotation(top=target_low, fill_alpha=0.2, fill_color='red')
+        plot.add_layout(lower)
+        target = BoxAnnotation(bottom=target_low,
+                               top=target_high,
+                               fill_alpha=0.2,
+                               fill_color='green')
+        plot.add_layout(target)
     plot.varea(x=x[window_size // 2:-window_size // 2],
                y1=y_avg[window_size // 2:-window_size // 2] +
                y_std[window_size // 2:-window_size // 2],
@@ -144,9 +142,11 @@ def make_figure(x,
                alpha=0.6,
                color='darkgray',
                legend_label='Std. ' + measurement_name)
+    plot.line(x, y, legend_label=measurement_name, color='darkblue')
     plot.line(x[window_size // 2:-window_size // 2],
               y_avg[window_size // 2:-window_size // 2],
               color='black',
-              legend_label='Avg. ' + measurement_name)
+              legend_label='Avg. ' + measurement_name,
+              line_dash=[2])
     plot.legend.orientation = "horizontal"
     return plot

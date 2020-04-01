@@ -16,9 +16,9 @@ class Prob:
 
     def update_reading(self):
         # read from sensor
-        self.humid, self.temp = Adafruit_DHT.read_retry(self.sensor_type,
-                                                        self.prop_pin,
-                                                        delay_seconds=0)
+        self.humid, self.temp = dht.read_retry(self.sensor_type,
+                                               self.prop_pin,
+                                               delay_seconds=0)
         self.temp_c_to_f()
 
     def temp_c_to_f(self):

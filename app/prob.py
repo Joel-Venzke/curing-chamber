@@ -3,6 +3,26 @@ from bokeh.plotting import figure, gridplot
 import numpy as np
 from scipy.ndimage.filters import uniform_filter
 from bokeh.models.annotations import BoxAnnotation
+import Adafruit_DHT as dht
+
+
+class Prob:
+    def __init__(self, prop_pin, sensor_type=dht.DHT22):
+        self.prop_pin = prop_pin
+        self.sensor_type = sensor_type
+        self.temp = None
+        self.humid = None
+        update_reading()
+
+    def update_reading(self):
+        # read from sensor
+        self.humid, self.temp = Adafruit_DHT.read_retry(self.sensor_type,
+                                                        self.prop_pin,
+                                                        delay_seconds=0)
+        temp_c_to_f()
+
+    def temp_c_to_f(self):
+        self.temp = (self.temp * 9. / 5.) + 32
 
 
 def window_stdev(arr, window):
@@ -88,21 +108,21 @@ def plot_data():
 
 
 def make_figure(
-    x,
-    y,
-    target_high=60,
-    target_low=50,
-    window_size=50,
-    x_range=None,
-    y_max_lower_bound=70,
-    y_min_upper_bound=70,
-    plot_width=400,
-    plot_height=150,
-    title="Temperature",
-    y_axis_label="Temperature (F)",
-    x_axis_label="Time",
-    measurement_name="Temp.",
-    tools="pan,crosshair,hover,box_select,lasso_select,save,reset,help"):
+        x,
+        y,
+        target_high=60,
+        target_low=50,
+        window_size=50,
+        x_range=None,
+        y_max_lower_bound=70,
+        y_min_upper_bound=70,
+        plot_width=400,
+        plot_height=150,
+        title="Temperature",
+        y_axis_label="Temperature (F)",
+        x_axis_label="Time",
+        measurement_name="Temp.",
+        tools="pan,crosshair,hover,box_select,lasso_select,save,reset,help"):
     window = np.ones(window_size) / float(window_size)
     y_avg = np.convolve(y, window, 'same')
     y_std = window_stdev(y, window_size) / 2

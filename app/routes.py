@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect
 from app import app
 from app.prob import plot_data
+from app.prob import Prob
 from app.forms import LoginForm
 from bokeh.resources import INLINE
 
@@ -14,11 +15,13 @@ def index():
 @app.route('/chamber/', defaults={'name': None})
 @app.route('/chamber/<name>')
 def chamber(name):
+    ambientProb = Prob(4)
+    chamberProb = Prob(17)
     prob = {
-        'chamber_temp': 65.2,
-        "chamber_humidity": 68.3,
-        'ambient_temp': 72,
-        "ambient_humidity": 30
+        'chamber_temp': chamberProb.temp,
+        "chamber_humidity": chamberProb.humid,
+        'ambient_temp': ambientProb.temp,
+        "ambient_humidity": ambientProb.humid
     }
     # grab the static resources
     js_resources = INLINE.render_js()

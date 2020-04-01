@@ -11,12 +11,10 @@
 
     
     <h2>Chamber: {{ prob.chamber_temp }} F {{ prob.chamber_humidity }}% RF</h2>
-    {{ plot_chamber_script|indent(4)|safe }}
-    {{ plot_chamber_div|indent(4)|safe }}
-
     <h2>Ambient: {{ prob.ambient_temp }} F {{ prob.ambient_humidity }}% RF</h2>
-    {{ plot_ambient_script|indent(4)|safe }}
-    {{ plot_ambient_div|indent(4)|safe }}
+    {{ plot_script|indent(4)|safe }}
+    {{ plot_div|indent(4)|safe }}
+
 {% endblock %}
 
 

@@ -10,83 +10,77 @@ def window_stdev(arr, window):
     return ((c2 - c1 * c1)**.5)[:]
 
 
-def plot_chamber():
+def plot_data():
     x = np.arange(0, 10 * np.pi, 0.1)
     y = np.sin(x) * 5 + (np.random.rand(x.shape[0]) - 0.5) * 2 + 55
-    temp_plot = make_figure(x,
-                            y,
-                            target_high=60,
-                            target_low=50,
-                            window_size=30,
-                            y_max_lower_bound=70,
-                            y_min_upper_bound=40,
-                            plot_width=500,
-                            plot_height=300,
-                            title="Temperature",
-                            y_axis_label="Temperature (F)",
-                            x_axis_label="Time",
-                            measurement_name="Temp.")
+    chamber_temp_plot = make_figure(x,
+                                    y,
+                                    target_high=60,
+                                    target_low=50,
+                                    window_size=30,
+                                    y_max_lower_bound=70,
+                                    y_min_upper_bound=40,
+                                    plot_width=500,
+                                    plot_height=300,
+                                    title="Chamber Temperature",
+                                    y_axis_label="Temperature (F)",
+                                    x_axis_label="Time",
+                                    measurement_name="Temp.")
 
     x = np.arange(0, 10 * np.pi, 0.1)
     y = np.sin(x) * 10 + (np.random.rand(x.shape[0]) - 0.5) * 2 + 70
 
-    humid_plot = make_figure(x,
-                             y,
-                             target_high=80,
-                             target_low=60,
-                             window_size=30,
-                             x_range=temp_plot.x_range,
-                             y_max_lower_bound=100,
-                             y_min_upper_bound=40,
-                             plot_width=500,
-                             plot_height=300,
-                             title="Humidity",
-                             y_axis_label="Humidity (% RH)",
-                             x_axis_label="Time",
-                             measurement_name="Humidity.")
-
-    p = gridplot([[temp_plot, humid_plot]])
-    # render template
-    script, div = components(p)
-    return script, div
-
-
-def plot_ambient():
+    chamber_humid_plot = make_figure(x,
+                                     y,
+                                     target_high=80,
+                                     target_low=60,
+                                     window_size=30,
+                                     x_range=chamber_temp_plot.x_range,
+                                     y_max_lower_bound=100,
+                                     y_min_upper_bound=40,
+                                     plot_width=500,
+                                     plot_height=300,
+                                     title="Chamber Humidity",
+                                     y_axis_label="Humidity (% RH)",
+                                     x_axis_label="Time",
+                                     measurement_name="Humidity")
     x = np.arange(0, 10 * np.pi, 0.1)
     y = (np.random.rand(x.shape[0]) - 0.5) * 4 + 72
-    temp_plot = make_figure(x,
-                            y,
-                            target_high=None,
-                            target_low=None,
-                            window_size=30,
-                            y_max_lower_bound=80,
-                            y_min_upper_bound=60,
-                            plot_width=500,
-                            plot_height=300,
-                            title="Temperature",
-                            y_axis_label="Temperature (F)",
-                            x_axis_label="Time",
-                            measurement_name="Temp.")
+    ambient_temp_plot = make_figure(x,
+                                    y,
+                                    target_high=None,
+                                    target_low=None,
+                                    window_size=30,
+                                    x_range=chamber_temp_plot.x_range,
+                                    y_max_lower_bound=80,
+                                    y_min_upper_bound=60,
+                                    plot_width=500,
+                                    plot_height=300,
+                                    title="Ambient Temperature",
+                                    y_axis_label="Temperature (F)",
+                                    x_axis_label="Time",
+                                    measurement_name="Temp.")
 
     x = np.arange(0, 10 * np.pi, 0.1)
     y = (np.random.rand(x.shape[0]) - 0.5) * 10 + 30
 
-    humid_plot = make_figure(x,
-                             y,
-                             target_high=None,
-                             target_low=None,
-                             window_size=30,
-                             x_range=temp_plot.x_range,
-                             y_max_lower_bound=50,
-                             y_min_upper_bound=0,
-                             plot_width=500,
-                             plot_height=300,
-                             title="Humidity",
-                             y_axis_label="Humidity (% RH)",
-                             x_axis_label="Time",
-                             measurement_name="Humidity.")
+    ambient_humid_plot = make_figure(x,
+                                     y,
+                                     target_high=None,
+                                     target_low=None,
+                                     window_size=30,
+                                     x_range=chamber_temp_plot.x_range,
+                                     y_max_lower_bound=50,
+                                     y_min_upper_bound=0,
+                                     plot_width=500,
+                                     plot_height=300,
+                                     title="Ambient Humidity",
+                                     y_axis_label="Humidity (% RH)",
+                                     x_axis_label="Time",
+                                     measurement_name="Humidity")
 
-    p = gridplot([[temp_plot, humid_plot]])
+    p = gridplot([[chamber_temp_plot, chamber_humid_plot],
+                  [ambient_temp_plot, ambient_humid_plot]])
     # render template
     script, div = components(p)
     return script, div

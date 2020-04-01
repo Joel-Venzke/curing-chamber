@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect
 from app import app
-from app.prob import plot_chamber, plot_ambient
+from app.prob import plot_data
 from app.forms import LoginForm
 from bokeh.resources import INLINE
 
@@ -24,16 +24,13 @@ def chamber(name):
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
 
-    chamber_temp_script, chamber_temp_div = plot_chamber()
-    ambient_temp_script, ambient_temp_div = plot_ambient()
+    temp_script, temp_div = plot_data()
     return render_template(
         'chamber.html',
         name=name,
         prob=prob,
-        plot_chamber_script=chamber_temp_script,
-        plot_chamber_div=chamber_temp_div,
-        plot_ambient_script=ambient_temp_script,
-        plot_ambient_div=ambient_temp_div,
+        plot_script=temp_script,
+        plot_div=temp_div,
         js_resources=js_resources,
         css_resources=css_resources,
     )
